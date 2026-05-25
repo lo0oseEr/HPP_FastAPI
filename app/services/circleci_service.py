@@ -15,8 +15,14 @@ HEADERS = {
 
 def get_pipelines():
 
-    url = f"https://circleci.com/api/v2/project/{PROJECT_SLUG}/pipeline"
+    url = "https://circleci.com/api/v2/project/gh/lo0oseEr/HPP_FastAPI/pipeline"
 
-    response = requests.get(url, headers=HEADERS)
+    response = requests.get(
+        url,
+        headers=HEADERS
+    )
+
+    print(response.status_code)
+    print(response.text)
 
     return response.json()
