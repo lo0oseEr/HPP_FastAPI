@@ -1,7 +1,15 @@
-import traceback
+from fastapi import APIRouter, Form
 import pandas as pd
+import traceback
+import pickle
 
-@app.post("/predict")
+router = APIRouter()
+
+with open("app/model/HPmodel.pkl", "rb") as f:
+    model = pickle.load(f)
+
+
+@router.post("/predict")
 async def predict(
     area: float = Form(...),
     bedrooms: int = Form(...),
