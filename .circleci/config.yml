@@ -1,0 +1,46 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.12
+
+    working_directory: ~/project
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Dependencies
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      - run:
+          name: Run Tests
+          command: |
+            . venv/bin/activate
+            pytest
+
+  deploy:
+    docker:
+      - image: cimg/python:3.12
+
+    steps:
+      - checkout
+
+      - run:
+          name: Deploy FastAPI App
+          command: |
+            echo "Deploy Step"
+
+workflows:
+  version: 2
+
+  ci_cd_pipeline:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
