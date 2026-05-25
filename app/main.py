@@ -7,6 +7,7 @@ from app.api.circleci import router as circleci_router
 
 app = FastAPI()
 
+
 templates = Jinja2Templates(directory="app/templates")
 
 
@@ -26,3 +27,5 @@ app.include_router(
     prefix="/api",
     tags=["CircleCI"]
 )
+
+print("API is running on http://localhost:8000")
