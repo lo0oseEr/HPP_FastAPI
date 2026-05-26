@@ -11,29 +11,22 @@ TOKEN = os.getenv("CIRCLECI_TOKEN")
 PROJECT_SLUG = os.getenv("CIRCLECI_PROJECT_SLUG")
 
 
-@router.get("/jobs/{job_number}/tests")
-def get_job_artifacts(job_number: int):
+@router.post("/pipeline")
+def trigger_pipeline():
 
-    url = f"https://circleci.com/api/v2/project/{PROJECT_SLUG}/{job_number}/tests"
+    url = f"https://circleci.com/api/v2/project/{PROJECT_SLUG}/pipeline"
 
     headers = {
         "Circle-Token": TOKEN,
-        "Accept": "application/json"
+        "Content-Type": "application/json"
     }
 
-    response = requests.get(url, headers=headers)
+    # Optional request body
+    payload = {
+        "branch": "main"
+    }
 
-    print("STATUS CODE:", response.status_code)
-    print("RAW RESPONSE:", response.text)
+    response = requests.post(url, headers=headers, json=payload
+    )
 
-    try:
-        data = response.json()
-        return data
-
-    except Exception as e:
-
-        return {
-            "error": str(e),
-            "status_code": response.status_code,
-            "raw_response": response.text
-        }
+    return response.json()
