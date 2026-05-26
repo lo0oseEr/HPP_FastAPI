@@ -10,22 +10,33 @@ router = APIRouter()
 TOKEN = os.getenv("CIRCLECI_TOKEN")
 PROJECT_SLUG = os.getenv("CIRCLECI_PROJECT_SLUG")
 
-@router.get("/pipeline")
-def get_pipeline():
 
-    url = f"https://circleci.com/api/v2/project/{PROJECT_SLUG}/pipeline"
+@router.get("/pipeline/{pipeline_number}")
+def get_pipeline_by_number(pipeline_number: int):
 
     headers = {
         "Circle-Token": TOKEN,
         "Accept": "application/json"
     }
 
-    # Debug prints
-    print(PROJECT_SLUG)
-    print(TOKEN)
-    print(url)
+    # Fetch pipeline list
+    url = f"https://circleci.com/api/v2/project/{PROJECT_SLUG}/pipeline"
 
     response = requests.get(url, headers=headers)
 
-    return response.json()
+    data = response.json()
 
+    # Match pipeline number
+    for item in data.get("items", []):
+
+        if item.get("number") == pipeline_number:
+
+            return {
+                "pipeline_number": item.get("number"),
+                "pipeline_id": item.get("id"),
+                "state": item.get("state"),
+                "branch": item.get("vcs", {}).get("branch"),
+                "created_at": item.get("created_at")
+            }
+
+    return {"message": "Pipeline not found"}
