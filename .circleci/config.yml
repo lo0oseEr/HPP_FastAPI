@@ -19,6 +19,18 @@ jobs:
           command: |
             python -m py_compile app/main.py
 
+      # Create artifact files
+      - run:
+          name: Generate Build Report
+          command: |
+            mkdir -p reports
+            echo "Build Successful" > reports/build_report.txt
+
+      # Store artifacts
+      - store_artifacts:
+          path: reports
+          destination: build-reports
+
 
   test:
     docker:
@@ -30,7 +42,18 @@ jobs:
       - run:
           name: Run Tests
           command: |
+            mkdir -p test-results
+            echo "<testsuite></testsuite>" > test-results/results.xml
             echo "Running Tests"
+
+      # Store test results
+      - store_test_results:
+          path: test-results
+
+      # Store test artifacts
+      - store_artifacts:
+          path: test-results
+          destination: test-results
 
 
   deploy:
@@ -43,7 +66,14 @@ jobs:
       - run:
           name: Deploy Application
           command: |
+            mkdir -p deploy-logs
+            echo "Deployment Successful" > deploy-logs/deploy.txt
             echo "Deploying Application"
+
+      # Store deployment artifacts
+      - store_artifacts:
+          path: deploy-logs
+          destination: deploy-logs
 
 
 workflows:
