@@ -11,10 +11,10 @@ TOKEN = os.getenv("CIRCLECI_TOKEN")
 PROJECT_SLUG = os.getenv("CIRCLECI_PROJECT_SLUG")
 
 
-@router.get("/job/{job_id}")
-def get_job_details(job_id: str):
+@router.get("/job/{job_number}")
+def get_job_details(job_number: int):
 
-    url = f"https://circleci.com/api/v2/job/{job_id}"
+    url = f"https://circleci.com/api/v2/project/{PROJECT_SLUG}/job/{job_number}"
 
     headers = {
         "Circle-Token": TOKEN,
